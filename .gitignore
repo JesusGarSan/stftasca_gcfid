@@ -1,2 +1,2 @@
 .*/ # Discard hidden folders
-data.mat # discard matlab data files
+*.mat # discard matlab data files
