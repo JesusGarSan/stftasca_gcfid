@@ -5,6 +5,7 @@ import pandas as pd
 import matplotlib.pyplot as plt
 from msa.feature_extraction.features import STFT, stft_parallel
 import librosa
+from airPLS import airPLS
 
 # % Read data
 F_data = pd.read_csv("data/Y_data.csv", header=None)
@@ -19,6 +20,27 @@ N_signals, signal_samples = X.shape
 
 # %% Initial visualization
 plt.plot(X[:,:].T, alpha=0.25);
+# plt.ylim(-200, 2000)
+
+# %% Baseline reduction using airPLS
+print("Removing baseline...")
+for sample_id in range(X.shape[0]):
+    correction = airPLS(X[sample_id])
+    X[sample_id] -= correction
+
+# %% Visualization after baseline reduction
+plt.plot(X[:,:].T, alpha=0.25);
+# plt.ylim(-200, 2000)
+
+# %% SNV - Autoscale row - wise
+for i in range(X.shape[0]):
+    aux = X[i, :]
+    mu = np.nanmean(aux)
+    sigma = np.nanstd(aux)
+    X[i,:] = (aux - mu) /sigma
+# %% Visualization after SNV reduction
+plt.plot(X[:,:].T, alpha=0.25);
+plt.ylim(-0.5, 5)
 
 # %% Scipy STFT (MESA)
 # sr = 200
@@ -82,8 +104,8 @@ plt.tight_layout()
 plt.show()
 
 # %% Calculate the FFT
-X_FFT = np.abs(np.fft.rfft(X, axis=1))
-# X_FFT = np.abs(np.fft.fft(X, axis=1))
+# X_FFT = np.abs(np.fft.rfft(X, axis=1))
+X_FFT = np.fft.fft(X, axis=1)
 
 X_FFT.shape
 # X_FFT

@@ -5,8 +5,7 @@ clc
 load data.mat
 size(X_fft)
 %% varPca Plots
-varPca(X_fft, "PCs", 1:10, "Preprocessing", 1, "PlotCkf", false);
-varPca(X_fft, "PCs", 1:10, "Preprocessing", 2, "PlotCkf", false);
+% varPca(X_fft, "PCs", 1:10, "Preprocessing", 1, "PlotCkf", false);
 % varPca(X_raw, "PCs", 1:10, "Preprocessing", 0, "PlotCkf", false);
 % varPca(X_sample_scaled, "PCs", 1:10, "Preprocessing", 0, "PlotCkf", false);
 % varPca(X_block_scaled, "PCs", 1:10, "Preprocessing", 0, "PlotCkf", false);
@@ -17,7 +16,14 @@ X = X_fft;
 size(X)
 % [size(X); size(times); size(freqs)]
 % X = X_fft(:,:);
-X = preprocess2D(X, 'Preprocessing', 2);
+[U, S,V] = svds(X,3);
+Scores = U*S;
+%%
+scatter(real(Scores))
+%%
+X = preprocess2D(X, 'Preprocessing', 1);
+varPca(X, "PCs", 1:10, "Preprocessing", 0, "PlotCkf", false);
+
 model.lvs=1:2;
 model = pcaEig(X,'PCs',model.lvs);
 model.var = trace(X'*X);
