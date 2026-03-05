@@ -32,7 +32,7 @@ for sample_id in range(X.shape[0]):
 plt.plot(X[:,:].T, alpha=0.25);
 # plt.ylim(-200, 2000)
 
-# %% SNV - Autoscale row - wise
+# %% SNV - Autoscale row-wise
 for i in range(X.shape[0]):
     aux = X[i, :]
     mu = np.nanmean(aux)
@@ -42,30 +42,6 @@ for i in range(X.shape[0]):
 plt.plot(X[:,:].T, alpha=0.25);
 plt.ylim(-0.5, 5)
 
-# %% Scipy STFT (MESA)
-# sr = 200
-# STF = STFT(sr, 45001*2, None, "boxcar")
-# times, freqs, Zxx = stft_parallel(X, STF, )
-# Sxx = np.abs(Zxx)#**2
-# #Sxx = np.real(Zxx)**2 # OPIAHSAIOHDOAIBDIOPASDBASIPDBASPDBASIPDBASPDBNASIPDBASPDBNAS
-# Zxx.shape, times.shape, freqs.shape
-# # %% torch STFT
-# import torch
-# X_torch = torch.from_numpy(X)
-# res = torch.stft(X_torch, 45001, 45001, 45001, return_complex=False,)
-# res.shape
-
-# %% Visualization
-# from msa.visualization import plot
-# fig, ax = plt.subplots(2,1, sharex=True)
-# sample = 11
-# ax[0].plot(X[sample, :])
-# _, _ , mesh = plot.spectrogram(times[:]*sr, freqs[0:-1:2], Sxx[sample,:,:], logscale=True, ax = ax[1]);
-
-# from mpl_toolkits.axes_grid1 import make_axes_locatable
-# divider = make_axes_locatable(ax[1])
-# cax = divider.append_axes("bottom", size="15%", pad=0.4)
-# fig.colorbar(mesh, cax=cax, orientation='horizontal');
 # %% Librosa STFT
 sr = 200
 win_length = X.shape[1] // 1
@@ -104,14 +80,14 @@ plt.tight_layout()
 plt.show()
 
 # %% Calculate the FFT
-# X_FFT = np.abs(np.fft.rfft(X, axis=1))
-X_FFT = np.fft.fft(X, axis=1)
+X_FFT = np.abs(np.fft.rfft(X, axis=1))
+# X_FFT = np.fft.fft(X, axis=1)
 
 X_FFT.shape
 # X_FFT
 
 # %% RAM saving: Filter away higher frequencies
-freqs_id = np.where(frequencies<=1000)
+freqs_id = np.where(frequencies<=10)
 
 X_FFT = X_FFT[:, :np.max(freqs_id)+1]
 Sxx = Sxx[:,:np.max(freqs_id)+1, :]
